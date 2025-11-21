@@ -1,4 +1,5 @@
 # IMPORTS
+from datetime import datetime
 import produto
 
 
@@ -31,7 +32,27 @@ import produto
 # associar_produto_fornecedor(indice_produto, indice_fornecedor)
 #       Associa um produto a um fornecedor
 #       Parametros: indice_produto (int), indice_fornecedor (int)
-#       int - STATUS_CODE (0=sucesso, 1=erro, 3=produto_nao_encontrado, 9= fornecedor_não_encontrado)
+#       Retorno: int - STATUS_CODE (0=sucesso, 1=erro, 3=produto_nao_encontrado, 9= fornecedor_não_encontrado)
+#
+# listar_produtos_por_fornecedor(cnpj)
+#       Lista todos os produtos oferecidos por um fornecedor
+#       Parametros: cnpj (str)
+#       Retorno: int - STATUS_CODE (0=sucesso, 1=erro)
+#
+# buscar_fornecedores_do_produto(indice_produto)
+#       Busca quais fornecedores oferecem um produto específico
+#       Parametros: indice_produto (str)
+#       Retorno: int - STATUS_CODE (0=sucesso, 3=produto_nao_encontrado)
+#
+# contatar_fornecedor(indice_fornecedor, motivo, produtos_necessarios)
+#       Gera contato/pedido para fornecedor com produtos em falta
+#       Parametros: indice_fornecedor (int), motivo (str), produtos_necessarios (list)
+#       Retorno: int - STATUS_CODE (0=sucesso, 1=erro)
+#
+# gerar_relatorio_fornecedores()
+#       Gera relatório completo de fornecedores e seus produtos
+#       Parametros: None
+#       Retorno: int - STATUS_CODE (0=sucesso, 1=erro)
 
 
 #Parametros globais
@@ -150,6 +171,64 @@ def associar_produto_fornecedor(indice_produto, indice_fornecedor):
     
     return 0
 
+def listar_produtos_por_fornecedor(cnpj):
+    for dict in produtos_por_fornecedor:
+        if dict["fornecedor"] == cnpj:
+            print(f"Fornecedor: {cnpj} - ", obtem_nome_fornecedor(cnpj))
+            for i in dict["produtos"]:
+                print(obtem_nome_produto(i))
+    
+    return 0
 
+def buscar_fornecedores_do_produto(indice_produto):
+    forn = []
+    for dict in produtos_por_fornecedor:
+        for prod in dict["produtos"]:
+            if prod == indice_produto:
+                forn.append(dict["fornecedor"])
 
+    if len(forn) == 0:
+        return 3, None
+    
+    return 0, forn
 
+def contatar_fornecedor(indice_fornecedor, motivo, produtos_necessarios):
+    with open("pedido_reposicao", 'w') as arq:
+        arq.write("PEDIDO DE REPOSICAO DE ESTOQUE\n")
+        arq.write("Data de Solicitacao: " + datetime.today().strftime('%Y-%m-%d') + "\n")
+        arq.write("Fornecedor: " + indice_fornecedor + " : " + str(obtem_nome_fornecedor(indice_fornecedor)) + "\n")
+        arq.write("Motivo do pedido:\n")
+        arq.write(f"{motivo}\n")
+        arq.write("------------------------------\n")
+        arq.write("Produtos Solicitados: \n")
+        for prod in produtos_necessarios:
+            arq.write("    - " + prod + " : " + str(obtem_nome_produto(prod)) + "\n")
+        
+        return 0
+
+def gerar_relatorio_fornecedores():
+
+    with open("relatorio_fornecedores", 'w') as arq:
+        arq.write("RELATORIO DE FORNECEDORES-PRODUTOS: \n")
+        arq.write("Fornecedor     |     Produtos \n")
+        for dict in produtos_por_fornecedor:
+            arq.write(dict["fornecedor"] + " - " + obtem_nome_fornecedor(dict["fornecedor"]))
+            arq.write("   ")
+            for prod in dict["produtos"]:
+                arq.write(prod + " - " + obtem_nome_produto(prod) + "\n")
+            
+            arq.write("\n")
+        
+        return 0
+
+def obtem_nome_produto(codigo):
+    for dict in produto.lst_produtos:
+        if dict["codigo"] == codigo:
+            return dict["nome"]
+    return None
+
+def obtem_nome_fornecedor(cnpj):
+    for dict in lst_fornecedores:
+        if dict["cnpj"] == cnpj:
+            return dict["nome"]
+    return None
