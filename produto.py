@@ -58,7 +58,7 @@ lst_produtos = []   # lst_produtos = [
 
 #Funcoes
 def carregar_produtos():
-    arq_caminho = os.path.dirname(arq_produtos)
+    arq_caminho = os.path.dirname(arq_produtos_path)
     if not os.path.exists(arq_caminho) and arq_caminho:
         printf("O caminho para o arquivo nao existe.")
         return 1
@@ -76,7 +76,7 @@ def carregar_produtos():
     return 0
 
 def salvar_produtos():
-    arq_caminho = os.path.dirname(arq_produtos)
+    arq_caminho = os.path.dirname(arq_produtos_path)
     if not os.path.exists(arq_caminho) and arq_caminho:
         printf("O caminho para o arquivo nao existe.")
         return 1
@@ -163,5 +163,6 @@ def deletar_produto(indice):
     else:
         print("Produto nao encontrado.\n")
         return 3
+
 
 
