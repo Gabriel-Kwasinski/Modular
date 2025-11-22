@@ -59,36 +59,44 @@ lst_produtos = []   # lst_produtos = [
 #Funcoes
 def carregar_produtos():
     arq_caminho = os.path.dirname(arq_produtos_path)
-    if not os.path.exists(arq_caminho) and arq_caminho:
-        printf("O caminho para o arquivo nao existe.")
+    if arq_caminho and not os.path.exists(arq_caminho):
+        print("O caminho para o arquivo nao existe.")
+        return 1
+
+    if not os.path.exists(arq_produtos_path):
+        print("Arquivo inexistente.")
         return 1
 
     with open(arq_produtos_path, 'r') as arq_prod:
         for linha in arq_prod:
             dados = linha.split(',')
             dict_produtos = {
-                "codigo" = dados[0]
-                "nome" = dados[1]
-                "categoria" = dados[2]
-                "preco_venda" = float(dados[3].strip())
+                "codigo"       : dados[0],
+                "nome"         : dados[1],
+                "categoria"    : dados[2],
+                "preco_venda"  : float(dados[3].strip())
             }
             lst_produtos.append(dict_produtos)
     return 0
 
 def salvar_produtos():
     arq_caminho = os.path.dirname(arq_produtos_path)
-    if not os.path.exists(arq_caminho) and arq_caminho:
-        printf("O caminho para o arquivo nao existe.")
+    if arq_caminho and not os.path.exists(arq_caminho):
+        print("O caminho para o arquivo nao existe.")
         return 1
 
-    with open(arq_produtos_path, 'w') as arq_prod:
-        for el in lst_produtos:
-            codigo = el['codigo']
-            nome = el['nome']
-            categoria = el['categoria']
-            preco_venda = el['preco_venda]
+    try:
+        with open(arq_produtos_path, 'w') as arq_prod:
+            for el in lst_produtos:
+                codigo = el['codigo']
+                nome = el['nome']
+                categoria = el['categoria']
+                preco_venda = el['preco_venda']
           
-            arq_prod.write(f"{codigo}, {nome}, {categoria}, {preco_venda}\n")   
+                arq_prod.write(f"{codigo}, {nome}, {categoria}, {preco_venda}\n") 
+    except Exception as e:
+        print("Erro ao salvar arquivo:", e)
+        return 1  
     return 0
 
 #Inicio da função auxilicar
@@ -109,22 +117,38 @@ def cadastrar_produto(codigo, nome, categoria, preco_venda):
         print("Erro ao converter o preco para float.\n")
         return 1
 
+    if not codigo or not nome:
+        print("Codigo e nome sao obrigatorios.\n")
+        return 1
+
+    preco_venda = float(preco_venda)
+    if preco_venda <= 0:
+        print("Preco deve ser positivo.\n")
+        return 1
+
     dict_produto = {
         "codigo"      : codigo,
         "nome"        : nome,
         "categoria"   : categoria,
-        "preco_venda" : float(preco_venda)
+        "preco_venda" : preco_venda
     }
 
     lst_produtos.append(dict_produto)  
     return 0
 
 def listar_produtos():
+    if not lst_produtos:
+        print("Nenhum produto foi cadastrado.\n")
+        return 1
+
     for el in lst_produtos:
         print(f"{el['codigo']}, {el['nome']}, {el['categoria']}, {el['preco_venda']}\n")
     return 0
 
 def buscar_produto_por_codigo(codigo):
+    if not codigo:
+        return -1
+
     for i, el in enumerate(lst_produtos):
         if el['codigo'] == codigo:
             return i
@@ -138,23 +162,27 @@ def buscar_produto_por_indice(indice):
         return 3
 
 def atualizar_produto(indice, nome=None, categoria=None, preco_venda=None):
-    try:
-        if busca_produto_por_indice(indice) != 0:
-            return 3
-      
-        prod = lst_produtos[indice]
-        if nome is not None:
-            prod['nome'] = nome
-      
-        if categoria is not None:
-            prod['categoria'] = categoria
+    if buscar_produto_por_indice(indice) != 0:
+        return 3
 
-        if preco_venda is not None:
-            prod['preco_venda'] = preco_venda
-        return 0
-    except Erro as e:
-        print("Nao foi possivel atualizar os dados do produto: ", e)
+    if nome is None and categoria is None and preco_venda is None:
         return 1
+
+    if preco_venda is not None:
+        if preco_venda <= 0:
+            return 1
+      
+    prod = lst_produtos[indice]
+    if nome is not None:
+        prod['nome'] = nome
+      
+    if categoria is not None:
+        prod['categoria'] = categoria
+
+    if preco_venda is not None:
+        prod['preco_venda'] = preco_venda
+
+    return 0
 
 def deletar_produto(indice):
     if 0 <= indice < len(lst_produtos):
@@ -163,6 +191,4 @@ def deletar_produto(indice):
     else:
         print("Produto nao encontrado.\n")
         return 3
-
-
 
