@@ -1,4 +1,4 @@
-#IMPORTANT:
+#IMPORTS:
 import os
 
 # FUNCOES:
@@ -163,4 +163,5 @@ def deletar_produto(indice):
     else:
         print("Produto nao encontrado.\n")
         return 3
+
 
