@@ -1,3 +1,6 @@
+#IMPORTANT:
+import os
+
 # FUNCOES:
 # def carregar_produtos():
 #       Carrega produtos do arquivo para memória.
@@ -41,6 +44,7 @@
 
 
 #Parametros globais
+arq_produtos_path = "produtos.txt"
 lst_produtos = []   # lst_produtos = [
                     #     [0] = {
                     #         "codigo"      : "10001-2",
@@ -54,6 +58,21 @@ lst_produtos = []   # lst_produtos = [
 
 #Funcoes
 def carregar_produtos():
+    arq_caminho = os.path.dirname(arq_produtos)
+    if not os.path.exists(arq_caminho) and arq_caminho:
+        printf("O caminho para o arquivo nao existe.")
+        return 1
+
+    with open(arq_produtos_path, 'r') as arq_prod:
+        for linha in arq_prod:
+            dados = linha.split(',')
+            dict_produtos = {
+                "codigo" = dados[0]
+                "nome" = dados[1]
+                "categoria" = dados[2]
+                "preco_venda" = float(dados[3].strip())
+            }
+            lst_produtos.append(dict_produtos)
     return 0
 
 def salvar_produtos():
@@ -75,4 +94,5 @@ def atualizar_produto(indice, nome=None, categoria=None, preco_venda=None):
     return 0
 
 def deletar_produto(indice):
+
     return 0
