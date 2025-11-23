@@ -1,0 +1,20 @@
+10001-2, arroz, nao-pereciveis, 8.5
+10002-9, feijao, nao-pereciveis, 7.9
+10003-6, acucar, nao-pereciveis, 4.2
+10004-3, cafe, bebidas, 12.9
+10005-0, oleo de soja, nao-pereciveis, 6.5
+10006-7, leite, laticinios, 4.8
+10007-4, macarrao, massas, 3.9
+10008-1, farinha, nao-pereciveis, 5.2
+10009-8, sal, temperos, 2.1
+10010-5, sabao em po, limpeza, 8.7
+10011-2, detergente liquido, limpeza, 3.4
+10012-9, shampoo, higiene, 15.9
+10013-6, creme dental, higiene, 6.8
+10014-3, pao de forma, panificados, 9.9
+10015-0, margarina, laticinios, 5.5
+10016-7, carne bovina, acougue, 28.9
+10017-4, frango, acougue, 18.5
+10018-1, batata, hortifruti, 4.3
+10019-8, tomate, hortifruti, 7.9
+10020-4, cebola, hortifruti, 3.8
