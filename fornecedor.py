@@ -544,5 +544,13 @@ def testa_gerar_relatorio_fornecedores():
 
     produtos_por_fornecedor = salva_produtos_por_fornecedor.copy()
 
-
-
+def testa_funcoes_fornecedor():
+    testa_carregar_fornecedores()
+    testa_salvar_fornecedores()
+    testa_cadastrar_fornecedor()
+    testa_listar_fornecedores()
+    testa_associar_produto_fornecedor()
+    testa_listar_produtos_por_fornecedor()
+    testa_buscar_fornecedores_do_produto()
+    testa_contatar_fornecedor()
+    testa_gerar_relatorio_fornecedores()
