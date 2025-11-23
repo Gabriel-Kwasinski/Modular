@@ -130,11 +130,9 @@ def salvar_fornecedores():
     global arq_fornecedores_path, lst_fornecedores
     
     if not os.path.isfile(arq_fornecedores_path):
-        print("Line 132")
         return 1
 
     try:
-        print("Line 136")
         with open(arq_fornecedores_path, 'w') as arq:
             for fornecedor in lst_fornecedores:
                 nome  = fornecedor["nome"]
@@ -145,9 +143,7 @@ def salvar_fornecedores():
 
                 arq.write(f"{nome},{cnpj},{tel},{email},{end}\n")
     except:
-        print("Line 147")
         return 1
-    print("Line 149")
     return 0
 
 def cadastrar_fornecedor(nome, cnpj, telefone, email, endereco):
@@ -554,3 +550,4 @@ def testa_funcoes_fornecedor():
     testa_buscar_fornecedores_do_produto()
     testa_contatar_fornecedor()
     testa_gerar_relatorio_fornecedores()
+
