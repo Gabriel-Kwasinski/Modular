@@ -162,3 +162,71 @@ def validaCNPJ(cnpj):
         return ERRO
 
     return SUCESSO
+
+
+#testes automatizados(casos 49-64)
+def testa_validaCPF():
+    # Caso 49: CPF válido com pontuação → SUCESSO (0)
+    assert validaCPF("123.456.789-09") == SUCESSO, "Erro validaCPF. Caso 49."
+
+    # Caso 50: Tamanho incorreto → ERRO (1)
+    assert validaCPF("12345") == ERRO, "Erro validaCPF. Caso 50 (curto)."
+    assert validaCPF("123456789012345") == ERRO, "Erro validaCPF. Caso 50 (longo)."
+
+    # Caso 51: Caracteres não numéricos → ERRO (1)
+    assert validaCPF("123A567B890") == ERRO, "Erro validaCPF. Caso 51."
+
+    # Caso 52: Dígitos iguais → ERRO (1)
+    assert validaCPF("111.111.111-11") == ERRO, "Erro validaCPF. Caso 52."
+
+    # Caso 53: Válido sem pontuação → SUCESSO (0)
+    assert validaCPF("12345678909") == SUCESSO, "Erro validaCPF. Caso 53."
+
+
+def testa_validaEmail():
+    # Caso 54: Email válido simples → SUCESSO (0)
+    assert validaEmail("usuario@dominio.com") == SUCESSO, "Erro validaEmail. Caso 54."
+
+    # Caso 55: Sem '@' → ERRO (1)
+    assert validaEmail("usuariodominio.com") == ERRO, "Erro validaEmail. Caso 55."
+
+    # Caso 56: Sem domínio → ERRO (1)
+    assert validaEmail("usuario@") == ERRO, "Erro validaEmail. Caso 56."
+
+    # Caso 57: Sem extensão / sem ponto → ERRO (1)
+    assert validaEmail("usuario@dominio") == ERRO, "Erro validaEmail. Caso 57."
+
+    # Caso 58: Email vazio → ERRO (1)
+    assert validaEmail("") == ERRO, "Erro validaEmail. Caso 58."
+
+    # Extra (parte do mesmo caso 58 no relatório): subdomínio válido
+    assert validaEmail("nome.sobrenome@empresa.co.br") == SUCESSO, \
+        "Erro validaEmail. Caso 58 (subdomínio válido)."
+
+
+def testa_validaCNPJ():
+    # Caso 59: CNPJ válido → SUCESSO (0)
+    assert validaCNPJ("04.252.011/0001-10") == SUCESSO, "Erro validaCNPJ. Caso 59."
+
+    # Caso 60: Tamanho incorreto → ERRO (1)
+    assert validaCNPJ("12345678") == ERRO, "Erro validaCNPJ. Caso 60 (curto)."
+    assert validaCNPJ("1234567890123456") == ERRO, "Erro validaCNPJ. Caso 60 (longo)."
+
+    # Caso 61: Caracteres não numéricos → ERRO (1)
+    assert validaCNPJ("12A45678B001C91") == ERRO, "Erro validaCNPJ. Caso 61."
+
+    # Caso 62: Dígitos iguais → ERRO (1)
+    assert validaCNPJ("11.111.111/1111-11") == ERRO, "Erro validaCNPJ. Caso 62."
+
+    # Caso 63: Dígito verificador incorreto → ERRO (1)
+    assert validaCNPJ("04.252.011/0001-00") == ERRO, "Erro validaCNPJ. Caso 63."
+
+    # Caso 64: Válido sem pontuação → SUCESSO (0)
+    assert validaCNPJ("04252011000110") == SUCESSO, "Erro validaCNPJ. Caso 64."
+
+
+def testa_funcoes_validacao():
+    testa_validaCPF()
+    testa_validaEmail()
+    testa_validaCNPJ()
+    print("TODOS OS TESTES DO MÓDULO VALIDACAO (49–64) PASSARAM!")
