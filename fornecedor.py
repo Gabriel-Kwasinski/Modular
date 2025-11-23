@@ -3,6 +3,7 @@ from datetime import datetime
 import produto
 import validacao
 import os
+import shutil
 
 
 # FUNÇÕES:
@@ -129,9 +130,11 @@ def salvar_fornecedores():
     global arq_fornecedores_path, lst_fornecedores
     
     if not os.path.isfile(arq_fornecedores_path):
+        print("Line 132")
         return 1
 
     try:
+        print("Line 136")
         with open(arq_fornecedores_path, 'w') as arq:
             for fornecedor in lst_fornecedores:
                 nome  = fornecedor["nome"]
@@ -142,8 +145,9 @@ def salvar_fornecedores():
 
                 arq.write(f"{nome},{cnpj},{tel},{email},{end}\n")
     except:
+        print("Line 147")
         return 1
-    
+    print("Line 149")
     return 0
 
 def cadastrar_fornecedor(nome, cnpj, telefone, email, endereco):
@@ -336,7 +340,8 @@ def testa_carregar_fornecedores():
 
     # Caso 65: Arquivo de fornecedores existe e contém dados válidos → retorno
     # SUCESSO (0).
-    assert carregar_fornecedores() == 0, "Erro na funcao <carregar_fornecedores.py>. Caso 65."
+    ret, empty = carregar_fornecedores()
+    assert ret == 0, "Erro na funcao <carregar_fornecedores.py>. Caso 65."
 
     # Caso 66: Arquivo inexistente → retorno ERRO (1) e lista vazia.
     salva_arq_fornecedores_path = arq_fornecedores_path
@@ -352,7 +357,8 @@ def testa_carregar_fornecedores():
         vazio.write('')
     
     arq_fornecedores_path = "arquivo_vazio.txt"
-    assert carregar_fornecedores() == 0, "Erro na funcao <carregar_fornecedores.py>. Caso 67"
+    ret, empty = carregar_fornecedores()
+    assert ret == 0, "Erro na funcao <carregar_fornecedores.py>. Caso 67"
     assert len(lst_fornecedores) == 0, "Erro na funcao <carregar_fornecedores.py>. Caso 67"
     
     # Restaura arq_fornecedores_path
@@ -388,6 +394,7 @@ def testa_salvar_fornecedores():
     # Caso 70: Lista vazia → retorno SUCESSO (0) e arquivo limpo ou vazio.
     salva_lst_fornecedores = lst_fornecedores.copy()
     arq_fornecedores_path = "copia_de_fornecedores.txt"
+    shutil.copyfile("fornecedores.txt", "copia_de_fornecedores.txt")
     lst_fornecedores = []
     assert salvar_fornecedores() == 0, "Erro na funcao <testa_salvar_fornecedores.py>. Caso 70."
     assert os.path.getsize(arq_fornecedores_path) == 0, "Erro na funcao <testa_salvar_fornecedores.py>. Caso 70."
@@ -396,6 +403,8 @@ def testa_salvar_fornecedores():
     arq_fornecedores_path = salva_arq_fornecedores_path
     #Restaura lst_fornecedores
     lst_fornecedores = salva_lst_fornecedores.copy()
+    salvar_fornecedores()
+    shutil.copyfile("fornecedores.txt", "copia_de_fornecedores.txt")
 
 def testa_cadastrar_fornecedor():
     # Caso 71: Dados válidos → retorno SUCESSO (0).
