@@ -5,6 +5,60 @@
 # recebe uma string, verifica se está em formato válido e devolve:
 #   SUCESSO (0) se for válido
 #   ERRO    (1) se for inválido
+#
+# CONSTANTES:
+#   SUCESSO = 0
+#   ERRO    = 1
+#
+# FUNÇÕES PRINCIPAIS (ACESSO):
+#
+# _so_digitos(s)
+#       Função auxiliar interna.
+#       Remove todos os caracteres não numéricos de uma string.
+#       Parâmetros:
+#           s (str) – string qualquer (pode conter dígitos, letras, pontuação etc.).
+#       Retorno:
+#           (str) – nova string contendo apenas os caracteres '0'..'9', na mesma ordem.
+#
+# validaCPF(cpf)
+#       Verifica se um CPF é válido conforme o algoritmo oficial.
+#       Regras:
+#           - aceita CPF com ou sem pontuação (usa apenas os dígitos numéricos)
+#           - exige exatamente 11 dígitos
+#           - rejeita CPFs com todos os dígitos iguais (ex.: 111.111.111-11)
+#           - confere os 2 dígitos verificadores
+#       Parâmetros:
+#           cpf (str) – CPF em qualquer formato (com ou sem pontos/traço).
+#       Retorno:
+#           SUCESSO (0) – se o CPF for válido.
+#           ERRO    (1) – se o CPF for inválido (tamanho incorreto, todos iguais, DV errado etc.).
+#
+# validaEmail(email)
+#       Verifica se um email tem formato básico válido.
+#       Regras:
+#           - remove espaços no início e no fim
+#           - precisa conter o caractere '@'
+#           - deve ter algo antes do '@' (parte local)
+#           - deve ter algo depois do '@' (domínio)
+#           - o domínio deve conter pelo menos um ponto (ex.: dominio.com, empresa.com.br)
+#       Parâmetros:
+#           email (str) – endereço de email a validar.
+#       Retorno:
+#           SUCESSO (0) – se o email tiver formato válido.
+#           ERRO    (1) – caso contrário (sem '@', sem domínio, sem ponto etc.).
+#
+# validaCNPJ(cnpj)
+#       Verifica se um CNPJ é válido conforme o algoritmo oficial.
+#       Regras:
+#           - aceita CNPJ com ou sem pontuação (usa apenas os dígitos numéricos)
+#           - exige exatamente 14 dígitos
+#           - rejeita CNPJs com todos os dígitos iguais
+#           - confere os 2 dígitos verificadores com os pesos oficiais
+#       Parâmetros:
+#           cnpj (str) – CNPJ em qualquer formato (com ou sem pontos, barra e traço).
+#       Retorno:
+#           SUCESSO (0) – se o CNPJ for válido.
+#           ERRO    (1) – se o CNPJ for inválido (tamanho incorreto, todos iguais, DV errado etc.).
 
 SUCESSO = 0
 ERRO = 1

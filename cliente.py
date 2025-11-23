@@ -1,8 +1,126 @@
 # cliente.py
 #
-# Módulo de clientes
-# Lê, grava, cadastra, lista, atualiza e deleta clientes.
-# Possui testes automáticos (Casos 1–21).
+# Módulo de clientes.
+# Responsável por carregar, salvar, cadastrar, listar, atualizar,
+# deletar e buscar clientes pelo CPF.
+#
+# Os dados são mantidos em memória em uma lista de dicionários:
+#   lista_clientes = [
+#       {
+#           "nome"  : <str>,
+#           "cpf"   : <str>,
+#           "email" : <str>
+#       },
+#       ...
+#   ]
+#
+# A persistência é feita em um arquivo texto (ARQ_CLIENTES), um cliente por linha,
+# com o formato:
+#       nome;cpf;email
+#
+# Códigos de retorno (status):
+#   SUCESSO               = 0  (importado de validacao)
+#   ERRO                  = 1  (importado de validacao)
+#   CLIENTE_NAO_ENCONTRADO = 2
+#   CPF_JA_CADASTRADO      = 5
+#
+# CONSTANTES GLOBAIS:
+#   ARQ_CLIENTES (str) – caminho do arquivo de clientes (pode ser alterado nos testes).
+#
+# ESTRUTURA GLOBAL:
+#   lista_clientes (list[dict]) – lista de clientes em memória.
+#
+# FUNÇÕES PRINCIPAIS (ACESSO):
+#
+# carregar_clientes()
+#       Lê o arquivo ARQ_CLIENTES e carrega todos os clientes para lista_clientes.
+#       Formato esperado de cada linha: "nome;cpf;email\n".
+#       Linhas vazias ou com número de campos diferente de 3 são ignoradas.
+#       Parâmetros:
+#           nenhum.
+#       Efeitos colaterais:
+#           - sobrescreve a lista global lista_clientes.
+#       Retorno:
+#           SUCESSO (0) – se o arquivo foi aberto e processado (mesmo que vazio).
+#           ERRO    (1) – se o arquivo não puder ser aberto (ex.: não existe / permissão negada).
+#
+# salvar_clientes()
+#       Grava o conteúdo de lista_clientes no arquivo ARQ_CLIENTES.
+#       Cada cliente é gravado em uma linha no formato "nome;cpf;email".
+#       Parâmetros:
+#           nenhum.
+#       Efeitos colaterais:
+#           - sobrescreve o arquivo ARQ_CLIENTES.
+#       Retorno:
+#           SUCESSO (0) – se conseguiu abrir e escrever o arquivo.
+#           ERRO    (1) – se não conseguiu abrir/gravar o arquivo.
+#
+# buscar_cliente_por_cpf(cpf)
+#       Procura um cliente pelo CPF dentro de lista_clientes.
+#       Parâmetros:
+#           cpf (str) – CPF a buscar (string exatamente igual à armazenada).
+#       Retorno:
+#           (int) índice do cliente na lista_clientes, se encontrado.
+#           -1   – se não houver cliente com esse CPF.
+#
+# cadastrar_cliente(nome, cpf, email)
+#       Cadastra um novo cliente na lista em memória.
+#       Regras:
+#           - remove espaços extras nas extremidades dos campos
+#           - não permite campos vazios
+#           - valida CPF usando validacao.validaCPF
+#           - valida email usando validacao.validaEmail
+#           - não permite CPF repetido (usa buscar_cliente_por_cpf)
+#       Parâmetros:
+#           nome  (str) – nome do cliente.
+#           cpf   (str) – CPF em qualquer formato (com ou sem pontuação).
+#           email (str) – email do cliente.
+#       Efeitos colaterais:
+#           - insere um novo dicionário em lista_clientes caso o cadastro seja aceito.
+#       Retorno:
+#           SUCESSO            (0) – se o cliente foi cadastrado com sucesso.
+#           CPF_JA_CADASTRADO  (5) – se o CPF já existe em lista_clientes.
+#           ERRO               (1) – se algum campo é vazio ou inválido (CPF/email).
+#
+# listar_clientes()
+#       Imprime todos os clientes cadastrados na tela, com índice, nome, CPF e email.
+#       Parâmetros:
+#           nenhum.
+#       Efeitos colaterais:
+#           - escreve na saída padrão (print).
+#       Retorno:
+#           SUCESSO (0) – se houver pelo menos um cliente e a listagem foi exibida.
+#           ERRO    (1) – se lista_clientes estiver vazia.
+#
+# atualizar_cliente(indice, nome=None, email=None)
+#       Atualiza os dados de um cliente já cadastrado, identificado pelo índice.
+#       É possível atualizar apenas o nome, apenas o email ou ambos.
+#       Regras:
+#           - índice deve ser válido (0 <= indice < len(lista_clientes))
+#           - nome novo, se fornecido, não pode ser vazio
+#           - email novo, se fornecido, deve ser válido (validacao.validaEmail)
+#           - se nenhum campo for alterado, a operação é considerada erro
+#       Parâmetros:
+#           indice (int) – posição do cliente em lista_clientes.
+#           nome   (str | None) – novo nome (opcional).
+#           email  (str | None) – novo email (opcional).
+#       Efeitos colaterais:
+#           - modifica o dicionário do cliente em lista_clientes, se os dados forem válidos.
+#       Retorno:
+#           SUCESSO               (0) – se ao menos um campo foi atualizado.
+#           CLIENTE_NAO_ENCONTRADO (2) – se o índice for inválido.
+#           ERRO                  (1) – se os parâmetros não resultarem em nenhuma alteração
+#                                      válida (ex.: todos None ou email inválido).
+#
+# deletar_cliente(indice)
+#       Remove um cliente de lista_clientes, identificado pelo índice.
+#       Parâmetros:
+#           indice (int) – posição do cliente em lista_clientes.
+#       Efeitos colaterais:
+#           - remove a entrada correspondente da lista global lista_clientes.
+#       Retorno:
+#           SUCESSO               (0) – se o cliente foi removido.
+#           CLIENTE_NAO_ENCONTRADO (2) – se o índice é inválido (negativo ou >= len(lista_clientes)).
 
 import os
 from validacao import validaCPF, validaEmail, SUCESSO, ERRO
