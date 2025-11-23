@@ -47,10 +47,10 @@ import os
 arq_produtos_path = "produtos.txt"
 lst_produtos = []   # lst_produtos = [
                     #     [0] = {
-                    #         "codigo"      : "10001-2",
-                    #         "nome"        : "arroz",
-                    #         "categoria"   : "nao-pereciveis",
-                    #         "preco_venda" : 8.5 
+                    #         "codigo"      : <str>,
+                    #         "nome"        : <str>,
+                    #         "categoria"   : <str>,
+                    #         "preco_venda" : <float> 
                     #     },
                     #     [1] = ...
                     # ]
@@ -191,5 +191,6 @@ def deletar_produto(indice):
     else:
         print("Produto nao encontrado.\n")
         return 3
+
 
 
