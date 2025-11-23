@@ -2,6 +2,8 @@ import produto
 import estoque
 import fornecedor
 import compra
+import cliente
+import validacao
 
 def testa_fornecedor():
     fornecedor.testa_carregar_fornecedores()
@@ -17,3 +19,5 @@ def testa_fornecedor():
 
 #Testes automaticos
 testa_fornecedor()
+cliente.testa_funcoes_cliente()
+validacao.testa_funcoes_validacao()
