@@ -411,7 +411,7 @@ def testa_cadastrar_fornecedor():
         "(24) 97801-4157",
         "patrick.medina@example.com",
         "3917 Cherry St"
-    ) == 1, "Erro na funcao <cadastrar_fornecedor.py>. CNPJ inválido foi aceito."
+    ) == 1, "Erro na funcao <cadastrar_fornecedor.py>. Caso 72."
 
     # Caso 73: Campos obrigatórios ausentes (nome, CNPJ) → retorno ERRO (1).
     assert cadastrar_fornecedor(
@@ -420,7 +420,7 @@ def testa_cadastrar_fornecedor():
         "(24) 97801-4157",
         "patrick.medina@example.com",
         "3917 Cherry St"
-    ) == 1, "Erro na funcao <cadastrar_fornecedor.py>. Dados ausentes foram aceitos."
+    ) == 1, "Erro na funcao <cadastrar_fornecedor.py>. Caso 73."
 
 def testa_listar_fornecedores():
     global lst_fornecedores
@@ -531,4 +531,5 @@ def testa_gerar_relatorio_fornecedores():
     assert gerar_relatorio_fornecedores() == 1, "Erro na funcao <cadastrar_fornecedor.py>. Caso 88."
 
     produtos_por_fornecedor = salva_produtos_por_fornecedor.copy()
+
 
