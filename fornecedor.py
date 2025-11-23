@@ -333,7 +333,7 @@ def testa_carregar_fornecedores():
 
     # Caso 65: Arquivo de fornecedores existe e contém dados válidos → retorno
     # SUCESSO (0).
-    assert carregar_fornecedores() == 0, "Erro na funcao <carregar_fornecedores.py>. Arquivo inexistente ou dados invalidos."
+    assert carregar_fornecedores() == 0, "Erro na funcao <carregar_fornecedores.py>. Caso 65."
 
     # Caso 66: Arquivo inexistente → retorno ERRO (1) e lista vazia.
     salva_arq_fornecedores_path = arq_fornecedores_path
@@ -341,7 +341,7 @@ def testa_carregar_fornecedores():
         os.remove("arquivo_nao_existe.txt")
     arq_fornecedores_path = "arquivo_nao_existe.txt"
     
-    assert carregar_fornecedores() == 1, "Erro na funcao <carregar_fornecedores.py>. Arquivo inexistente foi aberto."
+    assert carregar_fornecedores() == 1, "Erro na funcao <carregar_fornecedores.py>. Caso 66."
     arq_fornecedores_path = salva_arq_fornecedores_path
 
     # Caso 67: Arquivo existe mas está vazio → retorno SUCESSO (0) e lista vazia.
@@ -531,3 +531,4 @@ def testa_gerar_relatorio_fornecedores():
     assert gerar_relatorio_fornecedores() == 1, "Erro na funcao <cadastrar_fornecedor.py>. Caso 88."
 
     produtos_por_fornecedor = salva_produtos_por_fornecedor.copy()
+
