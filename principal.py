@@ -21,6 +21,4 @@ def testa_fornecedor():
 testa_fornecedor()
 cliente.testa_funcoes_cliente()
 validacao.testa_funcoes_validacao()
-
-#Produto
 produto.testa_funcoes_produto()
