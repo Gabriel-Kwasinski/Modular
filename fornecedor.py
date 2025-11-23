@@ -99,6 +99,9 @@ empty, lst_produtos = produto.carregar_produtos()
 def carregar_fornecedores():
     global arq_fornecedores_path, lst_fornecedores
 
+    if not os.path.isfile(arq_fornecedores_path):
+        return 1
+    
     try:
         with open(arq_fornecedores_path, 'r') as arq:
             lst_fornecedores = []
@@ -531,5 +534,6 @@ def testa_gerar_relatorio_fornecedores():
     assert gerar_relatorio_fornecedores() == 1, "Erro na funcao <cadastrar_fornecedor.py>. Caso 88."
 
     produtos_por_fornecedor = salva_produtos_por_fornecedor.copy()
+
 
 
