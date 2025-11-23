@@ -329,3 +329,297 @@ def cancelar_carrinho():
     global carrinho_atual
     carrinho_atual = []
     return 0
+
+
+# TESTES AUTOMATIZADOS
+def testa_carregar_compras():
+    """Testa a função carregar_compras()"""
+    global historico_compras, arq_compras_path
+    import os
+
+    # Salva estado original
+    salva_path = arq_compras_path
+    salva_historico = historico_compras.copy()
+
+    # Caso 65: Arquivo válido com compras
+    arq_compras_path = "compras_teste.txt"
+    with open(arq_compras_path, "w") as f:
+        f.write("2025-11-23 10:00:00,12345678909,50.00,10001-2,2,10002-3,1\n")
+    
+    assert carregar_compras() == 0, "Erro em carregar_compras. Caso 65."
+    assert len(historico_compras) == 1, "Erro em carregar_compras. Caso 65: historico vazio."
+    assert historico_compras[0]["cpf_cliente"] == "12345678909", "Erro em carregar_compras. Caso 65: CPF incorreto."
+
+    # Caso 66: Arquivo inexistente
+    arq_compras_path = "compras_nao_existe.txt"
+    if os.path.exists(arq_compras_path):
+        os.remove(arq_compras_path)
+    
+    assert carregar_compras() == 1, "Erro em carregar_compras. Caso 66."
+
+    # Caso 67: Arquivo vazio
+    arq_compras_path = "compras_vazio.txt"
+    with open(arq_compras_path, "w") as f:
+        f.write("")
+    
+    result = carregar_compras()
+    assert result == 0, "Erro em carregar_compras. Caso 67."
+    assert len(historico_compras) == 0, "Erro em carregar_compras. Caso 67: deveria estar vazio."
+
+    # Limpeza
+    if os.path.exists("compras_teste.txt"):
+        os.remove("compras_teste.txt")
+    if os.path.exists("compras_vazio.txt"):
+        os.remove("compras_vazio.txt")
+
+    arq_compras_path = salva_path
+    historico_compras = salva_historico.copy()
+
+
+def testa_salvar_compras():
+    """Testa a função salvar_compras()"""
+    global historico_compras, arq_compras_path
+    import os
+
+    salva_path = arq_compras_path
+    salva_historico = historico_compras.copy()
+
+    # Caso 68: Salvar histórico não vazio
+    historico_compras = [{
+        "data_hora": "2025-11-23 10:00:00",
+        "cpf_cliente": "12345678909",
+        "itens": [{"codigo": "10001-2", "quantidade": 2}],
+        "valor_total": 50.0
+    }]
+    arq_compras_path = "compras_salvar_teste.txt"
+    
+    assert salvar_compras() == 0, "Erro em salvar_compras. Caso 68."
+    assert os.path.exists(arq_compras_path), "Erro em salvar_compras. Caso 68: arquivo não criado."
+
+    # Caso 69: Histórico vazio
+    historico_compras = []
+    arq_compras_path = "compras_vazio_salvo.txt"
+    
+    assert salvar_compras() == 0, "Erro em salvar_compras. Caso 69."
+    assert os.path.getsize(arq_compras_path) == 0, "Erro em salvar_compras. Caso 69: arquivo deveria estar vazio."
+
+    # Limpeza
+    if os.path.exists("compras_salvar_teste.txt"):
+        os.remove("compras_salvar_teste.txt")
+    if os.path.exists("compras_vazio_salvo.txt"):
+        os.remove("compras_vazio_salvo.txt")
+
+    arq_compras_path = salva_path
+    historico_compras = salva_historico.copy()
+
+
+def testa_criar_carrinho():
+    """Testa a função criar_carrinho()"""
+    global carrinho_atual
+
+    # Caso 70: Criar carrinho vazio
+    carrinho_atual = [{"codigo": "10001-2", "quantidade": 1}]
+    assert criar_carrinho() == 0, "Erro em criar_carrinho. Caso 70."
+    assert len(carrinho_atual) == 0, "Erro em criar_carrinho. Caso 70: carrinho não foi esvaziado."
+
+
+def testa_adicionar_item_carrinho():
+    """Testa a função adicionar_item_carrinho()"""
+    global carrinho_atual
+    import produto
+    import estoque
+
+    salva_carrinho = carrinho_atual.copy()
+    salva_produtos = produto.lst_produtos.copy()
+    salva_estoque = estoque.lst_estoque.copy()
+
+    # Setup: produtos e estoque para teste
+    produto.lst_produtos = [
+        {"codigo": "10001-2", "nome": "Produto A", "categoria": "teste", "preco_venda": 10.0}
+    ]
+    estoque.lst_estoque = [
+        {"codigo": "10001-2", "quantidade": 5, "quantidade_minima": 2, "quantidade_padrao_compra": 10}
+    ]
+    criar_carrinho()
+
+    # Caso 71: Adicionar produto válido
+    assert adicionar_item_carrinho("10001-2", 2) == 0, "Erro em adicionar_item_carrinho. Caso 71."
+    assert len(carrinho_atual) == 1, "Erro em adicionar_item_carrinho. Caso 71: item não adicionado."
+    assert carrinho_atual[0]["quantidade"] == 2, "Erro em adicionar_item_carrinho. Caso 71: quantidade incorreta."
+
+    # Caso 72: Produto inexistente
+    assert adicionar_item_carrinho("99999-9", 1) == 3, "Erro em adicionar_item_carrinho. Caso 72."
+
+    # Caso 73: Estoque insuficiente
+    assert adicionar_item_carrinho("10001-2", 10) == 4, "Erro em adicionar_item_carrinho. Caso 73."
+
+    # Caso 74: Quantidade inválida (zero ou negativa)
+    assert adicionar_item_carrinho("10001-2", 0) == 1, "Erro em adicionar_item_carrinho. Caso 74."
+    assert adicionar_item_carrinho("10001-2", -1) == 1, "Erro em adicionar_item_carrinho. Caso 74."
+
+    # Restaura estado
+    carrinho_atual = salva_carrinho.copy()
+    produto.lst_produtos = salva_produtos.copy()
+    estoque.lst_estoque = salva_estoque.copy()
+
+
+def testa_remover_item_carrinho():
+    """Testa a função remover_item_carrinho()"""
+    global carrinho_atual
+
+    salva_carrinho = carrinho_atual.copy()
+
+    # Caso 75: Remover produto existente
+    carrinho_atual = [{"codigo": "10001-2", "quantidade": 2}]
+    assert remover_item_carrinho("10001-2") == 0, "Erro em remover_item_carrinho. Caso 75."
+    assert len(carrinho_atual) == 0, "Erro em remover_item_carrinho. Caso 75: produto não removido."
+
+    # Caso 76: Remover produto inexistente
+    carrinho_atual = [{"codigo": "10001-2", "quantidade": 2}]
+    assert remover_item_carrinho("99999-9") == 3, "Erro em remover_item_carrinho. Caso 76."
+
+    carrinho_atual = salva_carrinho.copy()
+
+
+def testa_exibir_carrinho():
+    """Testa a função exibir_carrinho()"""
+    global carrinho_atual
+    import produto
+
+    salva_carrinho = carrinho_atual.copy()
+    salva_produtos = produto.lst_produtos.copy()
+
+    produto.lst_produtos = [
+        {"codigo": "10001-2", "nome": "Produto A", "categoria": "teste", "preco_venda": 10.0}
+    ]
+
+    # Caso 77: Carrinho com itens
+    carrinho_atual = [{"codigo": "10001-2", "quantidade": 2}]
+    assert exibir_carrinho() == 0, "Erro em exibir_carrinho. Caso 77."
+
+    # Caso 78: Carrinho vazio
+    carrinho_atual = []
+    assert exibir_carrinho() == 7, "Erro em exibir_carrinho. Caso 78."
+
+    carrinho_atual = salva_carrinho.copy()
+    produto.lst_produtos = salva_produtos.copy()
+
+
+def testa_finalizar_compra():
+    """Testa a função finalizar_compra()"""
+    global carrinho_atual, historico_compras
+    import produto
+    import estoque
+
+    salva_carrinho = carrinho_atual.copy()
+    salva_historico = historico_compras.copy()
+    salva_produtos = produto.lst_produtos.copy()
+    salva_estoque = estoque.lst_estoque.copy()
+
+    # Setup
+    produto.lst_produtos = [
+        {"codigo": "10001-2", "nome": "Produto A", "categoria": "teste", "preco_venda": 10.0}
+    ]
+    estoque.lst_estoque = [
+        {"codigo": "10001-2", "quantidade": 10, "quantidade_minima": 2, "quantidade_padrao_compra": 10}
+    ]
+    historico_compras = []
+
+    # Caso 79: Finalizar compra com sucesso
+    carrinho_atual = [{"codigo": "10001-2", "quantidade": 2}]
+    assert finalizar_compra("12345678909") == 0, "Erro em finalizar_compra. Caso 79."
+    assert len(historico_compras) == 1, "Erro em finalizar_compra. Caso 79: compra não registrada."
+    assert len(carrinho_atual) == 0, "Erro em finalizar_compra. Caso 79: carrinho não esvaziado."
+
+    # Caso 80: Carrinho vazio
+    carrinho_atual = []
+    assert finalizar_compra() == 7, "Erro em finalizar_compra. Caso 80."
+
+    # Restaura estado
+    carrinho_atual = salva_carrinho.copy()
+    historico_compras = salva_historico.copy()
+    produto.lst_produtos = salva_produtos.copy()
+    estoque.lst_estoque = salva_estoque.copy()
+
+
+def testa_listar_compras():
+    """Testa a função listar_compras()"""
+    global historico_compras
+
+    salva_historico = historico_compras.copy()
+
+    # Caso 81: Histórico com compras
+    historico_compras = [{
+        "data_hora": "2025-11-23 10:00:00",
+        "cpf_cliente": "12345678909",
+        "itens": [{"codigo": "10001-2", "quantidade": 2}],
+        "valor_total": 20.0
+    }]
+    assert listar_compras() == 0, "Erro em listar_compras. Caso 81."
+
+    # Caso 82: Histórico vazio
+    historico_compras = []
+    assert listar_compras() == 1, "Erro em listar_compras. Caso 82."
+
+    # Caso 83: Filtrar por CPF
+    historico_compras = [
+        {
+            "data_hora": "2025-11-23 10:00:00",
+            "cpf_cliente": "12345678909",
+            "itens": [{"codigo": "10001-2", "quantidade": 2}],
+            "valor_total": 20.0
+        },
+        {
+            "data_hora": "2025-11-23 11:00:00",
+            "cpf_cliente": "98765432100",
+            "itens": [{"codigo": "10002-3", "quantidade": 1}],
+            "valor_total": 15.0
+        }
+    ]
+    assert listar_compras("12345678909") == 0, "Erro em listar_compras. Caso 83."
+
+    historico_compras = salva_historico.copy()
+
+
+def testa_cancelar_carrinho():
+    """Testa a função cancelar_carrinho()"""
+    global carrinho_atual
+
+    # Caso 84: Cancelar carrinho com itens
+    carrinho_atual = [{"codigo": "10001-2", "quantidade": 2}]
+    assert cancelar_carrinho() == 0, "Erro em cancelar_carrinho. Caso 84."
+    assert len(carrinho_atual) == 0, "Erro em cancelar_carrinho. Caso 84: carrinho não esvaziado."
+
+
+def testa_funcoes_compra():
+    """Executa todos os testes do módulo compra"""
+    print("Iniciando testes do módulo compra...")
+    
+    testa_carregar_compras()
+    print("✓ Testes de carregar_compras passaram (casos 65-67)")
+    
+    testa_salvar_compras()
+    print("✓ Testes de salvar_compras passaram (casos 68-69)")
+    
+    testa_criar_carrinho()
+    print("✓ Testes de criar_carrinho passaram (caso 70)")
+    
+    testa_adicionar_item_carrinho()
+    print("✓ Testes de adicionar_item_carrinho passaram (casos 71-74)")
+    
+    testa_remover_item_carrinho()
+    print("✓ Testes de remover_item_carrinho passaram (casos 75-76)")
+    
+    testa_exibir_carrinho()
+    print("✓ Testes de exibir_carrinho passaram (casos 77-78)")
+    
+    testa_finalizar_compra()
+    print("✓ Testes de finalizar_compra passaram (casos 79-80)")
+    
+    testa_listar_compras()
+    print("✓ Testes de listar_compras passaram (casos 81-83)")
+    
+    testa_cancelar_carrinho()
+    print("✓ Testes de cancelar_carrinho passaram (caso 84)")
+    
+    print("\nTODOS OS TESTES DO MÓDULO COMPRA (65-84) PASSARAM!")
