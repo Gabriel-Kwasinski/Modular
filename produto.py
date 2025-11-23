@@ -77,7 +77,7 @@ def carregar_produtos():
                 "preco_venda"  : float(dados[3].strip())
             }
             lst_produtos.append(dict_produtos)
-    return 0
+    return 0, lst_produtos.copy()
 
 def salvar_produtos():
     arq_caminho = os.path.dirname(arq_produtos_path)
@@ -191,4 +191,5 @@ def deletar_produto(indice):
     else:
         print("Produto nao encontrado.\n")
         return 3
+
 
