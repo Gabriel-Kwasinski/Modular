@@ -4,5 +4,4 @@ Strawplast Descartaveis,45.001.868/0001-44,(79) 97570-5419,brooklyn.hopkins@exam
 Fadel,41.366.466/0001-92,(97) 96340-5260,tiffany.austin@example.com,3326 W Sherman Dr
 BBS Cerealista Alimentos,07.877.564/0001-56,(32) 98593-9116,juan.steeves@example.com,4896 Saddle Dr
 Caramuru,32.243.479/0001-83,(71) 97405-4310,marian.ward@example.com,1695 Mcclellan Rd
-
 Pamplona,47.661.245/0001-23,(17) 98154-1913,lois.robertson@example.com,7580 Hogan St
